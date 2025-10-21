@@ -1,0 +1,115 @@
+0.检查版本
+运行版本检查.py，查看虚拟环境中库的版本是否和requirements.txt内要求一致
+
+1.训练模型
+基本用法：
+python train.py harry
+
+带参数：
+python train.py harry --epochs 5 --batch-size 4 --learning-rate 3e-5
+
+参数说明：
+author: 作者名称（必需）
+--epochs: 训练轮数（默认: 3）
+--batch-size: 批次大小（默认: 2）
+--learning-rate: 学习率（默认: 5e-5）
+--gradient-accumulation-steps：梯度累积步数（模拟更大batch，默认: 4）
+--eval-split：验证集比例（默认：0.1）
+
+示例
+#快速测试（小数据集）
+python train.py harry --epochs 2 --batch-size 2 --gradient-accumulation-steps 4
+
+#标准训练
+python train.py harry --epochs 3 --batch-size 4 --gradient-accumulation-steps 8 --eval-split 0.1
+
+#大数据集训练
+python train.py tolkien --epochs 5 --batch-size 2 --learning-rate 3e-5 --gradient-accumulation-steps 16
+
+#无验证集训练
+python train.py harry --epochs 3 --eval-split 0
+
+2.生成文本
+基本用法：
+python generate.py harry "He opened the door"
+
+带参数：
+python generate.py harry "He opened the door" --max-length 300 --temperature 0.9 --num-sequences 3
+
+参数说明：
+author: 作者名称（必需）
+prompt: 起始句子（必需，需要加引号）
+--max-length: 最大生成长度（默认: 200）
+--min-length: 生成的最小token数（默认: 10）
+--temperature: 温度参数，控制创造性（默认: 0.8，范围0.1-2.0）
+--top-k: Top-K采样（默认: 50）
+--top-p: Top-P采样（默认: 0.95）
+--repetition-penalty: 重复惩罚系数（默认: 1.2，范围: 1.0-2.0，1.0为无惩罚）
+--num-sequences: 生成多个版本（默认: 1）
+--num-beams: Beam search数量（默认: 1，建议创造性任务用1，摘要任务用3-5）
+
+示例
+# 训练模型
+python train.py harry --epochs 3
+
+# 生成单个文本
+python generate.py harry "He opened the door"
+
+# 生成多个版本的文本
+python generate.py harry "The wizard said" --num-sequences 3 --temperature 1.0
+
+# 生成更长的文本
+python generate.py harry "In the darkness" --max-length 500
+python generate.py yuhua "他说" --max-length 500
+注意事项
+temperature越高，生成的文本越有创造性但可能不连贯
+temperature越低，生成的文本越保守但更连贯
+
+3.常见问题
+Q: 训练中断了怎么办？
+A: 直接重新运行相同的命令，会自动从最新的checkpoint恢复训练。
+
+Q: 如何知道训练是否过拟合？
+A: 观察训练日志中的 eval_loss，如果持续上升说明过拟合，应该：
+   - 减少epochs
+   - 增加数据量
+   - 使用更大的eval-split
+
+Q: 生成的文本重复怎么办？
+A: 调整以下参数：
+   - 增大 repetition-penalty (1.2 → 1.5)
+   - 提高 temperature (0.8 → 1.0)
+   - 减小 top-k (50 → 30)
+
+Q: 生成的文本不连贯怎么办？
+A: 调整以下参数：
+   - 降低 temperature (0.8 → 0.6)
+   - 减小 repetition-penalty (1.2 → 1.1)
+   - 使用 beam search (--num-beams 3)
+
+Q: 训练速度太慢怎么办？
+A: GPU环境下：
+   - 增大 batch-size (2 → 4 → 8)
+   - 减小 gradient-accumulation-steps
+   CPU环境下：
+   - 减小数据量
+   - 减少epochs
+   - 设置 eval-split=0
+
+4.进阶技巧
+技巧1: 多阶段训练
+# 第一阶段：快速训练
+python train.py harry --epochs 2 --learning-rate 5e-5
+
+# 第二阶段：精细调优
+python train.py harry --epochs 2 --learning-rate 1e-5
+
+技巧2: 对比生成
+# 生成多个版本，手动选择最好的
+python generate.py harry "The story begins" --num-sequences 10 --temperature 0.9
+技巧3: 控制生成长度
+# 短文快速生成
+python generate.py harry "Hello" --max-length 50 --min-length 20
+
+# 长文章生成
+python generate.py harry "Chapter 1" --max-length 1000 --min-length 500

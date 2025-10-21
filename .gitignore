@@ -1,0 +1,105 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyTorch模型文件
+*.bin
+*.pt
+*.pth
+*.safetensors
+*.ckpt
+
+# 模型目录（包含大文件）
+models/*/
+!models/.gitkeep
+gpt2/
+!gpt2/.gitkeep
+
+# 训练数据
+data/*/
+!data/.gitkeep
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# 环境变量
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 日志文件
+*.log
+logs/
+*.out
+
+# 临时文件
+*.tmp
+*.temp
+temp/
+tmp/
+
+# 压缩文件
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# Flask
+instance/
+.webassets-cache
+
+# 训练相关
+runs/
+checkpoints/
+wandb/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# 其他
+*.bak
+*.swp
+*~
+
